@@ -354,6 +354,35 @@ resource "aws_instance" "instance" {
   }
 }
 
+provisioner "remote-exec" {
+
+      connection {
+    type     = "ssh"
+    user     = "centos"
+    password = "DevOps321"
+    host     = self.private_ip
+  }
+
+    inline = [
+      "rm -rf roboshopusing-shell",
+      "git clone https://github.com/KcVamsi/roboshopusing-shell",
+      "cd roboshopusing-shell",
+      "sudo bash ${each.value["name"]}.sh"
+    ]
+  }
+
+
+
+# we make the connection inside the provisoner or the outside both are ok
+# provisoner is a sub block of the resouce, that means after server creation if we want to do some changes then we can use the provisoner
+
+
+
+
+
+
+
+
 # now we need to create DNS records also. for that we use 
 
 
