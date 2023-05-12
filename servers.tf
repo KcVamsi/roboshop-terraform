@@ -354,8 +354,34 @@ resource "aws_instance" "instance" {
   }
 }
 
-provisioner "remote-exec" {
+# provisioner "remote-exec" {
 
+#       connection {
+#     type     = "ssh"
+#     user     = "centos"
+#     password = "DevOps321"
+#     host     = self.private_ip
+#   }
+
+#     inline = [
+#       "rm -rf roboshopusing-shell",
+#       "git clone https://github.com/KcVamsi/roboshopusing-shell",
+#       "cd roboshopusing-shell",
+#       "sudo bash ${each.value["name"]}.sh"
+#     ]
+#   }
+
+
+
+# we make the connection inside the provisoner or the outside both are ok
+# provisoner is a sub block of the resouce, that means after server creation if we want to do some changes then we can use the provisoner
+
+
+
+resorce "null_resource" "provisioner" {
+  depends_on = [aws_instance.instance, aws_route53_record.records]
+  for_each = var.components
+  provisioner "remote-exec" {
       connection {
     type     = "ssh"
     user     = "centos"
@@ -371,10 +397,13 @@ provisioner "remote-exec" {
     ]
   }
 
+}
+
+# "sudo bash ${each.value["name"]}.sh"
+# "sudo bash ${each.value["name"]}.sh ${lookup(each.value, "password", "null")}"
 
 
-# we make the connection inside the provisoner or the outside both are ok
-# provisoner is a sub block of the resouce, that means after server creation if we want to do some changes then we can use the provisoner
+
 
 
 
